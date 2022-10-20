@@ -1,8 +1,9 @@
 from random import choices
 from django.db import models
+from common.models import CommonModel  ## 반복사용되는코드 상속받음
 
 # Create your models here.
-class Romm(models.Model):
+class Romm(CommonModel):
     """Room Model Definition"""
 
     class RoomKindChoices(models.TextChoices):
@@ -10,6 +11,7 @@ class Romm(models.Model):
         PRIVATE_ROOM = ("private_room", "Private_Room")
         SHARED_ROOM = ("shared_room", "Shared_Room")
 
+    name = models.CharField(max_length=180, default="")
     country = models.CharField(
         max_length=50,
         default="한국",
@@ -36,9 +38,13 @@ class Romm(models.Model):
         "users.User",
         on_delete=models.CASCADE,
     )
+    amenity = models.ManyToManyField("rooms.Amenity")
+
+    def __str__(self) -> str:
+        return self.name
 
 
-class Amenity(models.Model):
+class Amenity(CommonModel):
     """Amenity Definition"""
 
     name = models.CharField(
@@ -47,4 +53,11 @@ class Amenity(models.Model):
     description = models.CharField(
         max_length=150,
         null=True,
+        blank=True,
     )
+
+    def __str__(self) -> str:
+        return self.name
+
+    class Meta:
+        verbose_name_plural = "Amenities"
