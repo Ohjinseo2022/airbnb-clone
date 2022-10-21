@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Romm, Amenity
+from .models import Room, Amenity
 
 # Register your models here.
-@admin.register(Romm)
+@admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     list_display = (
         "name",

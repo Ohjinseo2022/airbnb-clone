@@ -3,7 +3,7 @@ from django.db import models
 from common.models import CommonModel  ## 반복사용되는코드 상속받음
 
 # Create your models here.
-class Romm(CommonModel):
+class Room(CommonModel):
     """Room Model Definition"""
 
     class RoomKindChoices(models.TextChoices):
@@ -42,6 +42,13 @@ class Romm(CommonModel):
 
     def __str__(self) -> str:
         return self.name
+
+    category = models.ForeignKey(
+        "categories.Category",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
 
 
 class Amenity(CommonModel):
