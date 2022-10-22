@@ -20,6 +20,9 @@ class Photo(CommonModel):
         blank=True,
     )
 
+    def __str__(self) -> str:
+        return "Photo File"
+
 
 class Video(CommonModel):
     file = models.FileField()
@@ -27,3 +30,6 @@ class Video(CommonModel):
         "experiences.Experiences",
         on_delete=models.CASCADE,
     )
+
+    def __str__(self) -> str:
+        return "Video File"
