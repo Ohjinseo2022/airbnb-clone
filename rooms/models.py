@@ -40,15 +40,18 @@ class Room(CommonModel):
     )
     amenity = models.ManyToManyField("rooms.Amenity")
 
-    def __str__(self) -> str:
-        return self.name
-
     category = models.ForeignKey(
         "categories.Category",
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
     )
+
+    def __str__(self) -> str:
+        return self.name
+
+    def total_amenities(self):
+        return self.amenity.count()
 
 
 class Amenity(CommonModel):
