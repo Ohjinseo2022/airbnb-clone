@@ -1,2 +1,12 @@
 <h1>{{title}}</h1>
-<div></div>
+<ul>
+  {% for room in rooms%}
+  <li>
+    <a href="/rooms/{{room.pk}}">
+    {{room.name}}<br />
+    {%for amenity in room.amenity.all %}
+    <span>-{{amenity.name}}<br /> </span>
+    {%endfor%}
+  </li></a> 
+  {% endfor %}
+</ul>
