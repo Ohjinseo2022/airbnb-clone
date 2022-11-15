@@ -14,12 +14,17 @@ def categories(request):
         serializer = CategorySerializer(all_categories, many=True)
         return Response(serializer.data)
     elif request.method == "POST":
-        print(request.data)
-        Category.objects.create(
-            name=request.data["name"],
-            kind=request.data["kind"],
-        )
-        return Response({"created": True})
+        # print(request.data)
+        # Category.objects.create(
+        #     name=request.data["name"],
+        #     kind=request.data["kind"],
+        # )
+        serializer = CategorySerializer(data=request.data)
+        if serializer.is_valid():
+            new_category = serializer.save()
+            return Response(CategorySerializer(new_category).data)
+        else:
+            return Response(serializer.errors)
 
 
 @api_view()
