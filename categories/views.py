@@ -3,7 +3,7 @@ from .models import Category
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
+from rest_framework.exceptions import NotFound
 from .serializers import CategorySerializer
 
 # Create your views here.
@@ -27,8 +27,23 @@ def categories(request):
             return Response(serializer.errors)
 
 
-@api_view()
+@api_view(["GET", "PUT"])
 def category(request, pk):
-    category = Category.objects.get(pk=pk)
-    serialilzer = CategorySerializer(category)
-    return Response(serialilzer.data)
+    try:
+        category = Category.objects.get(pk=pk)
+    except Category.DoesNotExist:
+        raise NotFound
+    if request.method == "GET":
+        serialilzer = CategorySerializer(category)
+        return Response(serialilzer.data)
+    elif request.method == "PUT":
+        serialilzer = CategorySerializer(
+            category,
+            data=request.data,
+            partial=True,
+        )
+        if serialilzer.is_valid():
+            updated_category = serialilzer.save()
+            return Response(CategorySerializer(updated_category).data)
+        else:
+            return Response(serialilzer.errors)
