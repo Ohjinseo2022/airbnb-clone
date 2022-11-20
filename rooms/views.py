@@ -1,37 +1,31 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from .models import Room
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import Amenity
+from .serializers import AmenitySerializer
 
-# Create your views here.
-
-
-def see_all_room(request):
-    rooms = Room.objects.all()
-    return render(
-        request,
-        "all_rooms.html",
-        {
-            "rooms": rooms,
-            "title": "Hello! this title comes from django!",
-        },
-    )
+# /api/v1/rooms/amenites
+# /api/v1/rooms/amenites/1
 
 
-def see_one_room(request, room_pk):
-    try:
-        room = Room.objects.get(pk=room_pk)
-        return render(
-            request,
-            "room_detail.html",
-            {
-                "room": room,
-            },
+class Amenities(APIView):
+    def get(self, request):
+        all_amenities = Amenity.objects.all()
+        serializer = AmenitySerializer(
+            all_amenities,
+            many=True,
         )
-    except Room.DoesNotExist:
-        return render(
-            request,
-            "room_detail.html",
-            {
-                "not_found": True,
-            },
-        )
+        return Response(serializer.data)
+
+    def post(self, request):
+        pass
+
+
+class AmentiyDeail(APIView):
+    def get(self, request, pk):
+        pass
+
+    def put(self, request, pk):
+        pass
+
+    def delete(self, request, pk):
+        pass
