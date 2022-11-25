@@ -1,6 +1,6 @@
 
 
-11.1챕터 8분 13초  듣는중 아....아아아!!!!
+11.3챕터 시작 해야함 ! 아....아아아!!!!
 
 serializers.py 예시
 from rest_framework import serializers
