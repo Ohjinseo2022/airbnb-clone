@@ -27,7 +27,9 @@ class AmenitySerializer(ModelSerializer):
 
 
 class RoomDetailSerializer(ModelSerializer):
-    owner = TinyUserSerilalizer()  # owner 에 해당하는 부분은 TinyUserSerializer 양식에 맞춰서 보여줘라!
+    owner = TinyUserSerilalizer(
+        read_only=True
+    )  # owner 에 해당하는 부분은 TinyUserSerializer 양식에 맞춰서 보여줘라!
     amenity = AmenitySerializer(many=True)  # 안에 여러개의 정보가 포함되어 있기 떄문에 many=True 옵셥을 줘야함!
     category = CategorySerializer()
 

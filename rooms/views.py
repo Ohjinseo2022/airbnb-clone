@@ -80,6 +80,16 @@ class Rooms(APIView):
         )  # serializer 를 사용하여 형식에 맞게 번역처리
         return Response(serializer.data)  # serializer 에 담긴 data 를 전손
 
+    # create room!
+    def post(self, request):
+        serializer = RoomDetailSerializer(data=request.data)
+        if serializer.is_valid():
+            room = serializer.save()  ## save() 메서드안에 .create()가 포함되어있음
+            serializer = RoomDetailSerializer(room)
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+
 
 class RoomDetail(APIView):
     def get_object(self, pk):
