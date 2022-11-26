@@ -2,8 +2,9 @@ from rest_framework.views import APIView
 from rest_framework.status import HTTP_204_NO_CONTENT
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
-from .models import Amenity
-from .serializers import AmenitySerializer
+from .models import Amenity, Room
+from .serializers import AmenitySerializer, RoomListSerializer, RoomDetailSerializer
+
 
 # /api/v1/rooms/amenites
 # /api/v1/rooms/amenites/1
@@ -32,7 +33,7 @@ class Amenities(APIView):
 #     def get(self, request, pk):
 #         serialilzer = CategorySerializer(self.get_object(pk))
 #         return Response(serialilzer.data)
-class AmentiyDeail(APIView):
+class AmentiyDetail(APIView):
     def get_object(self, pk):
         try:
             return Amenity.objects.get(pk=pk)
@@ -69,3 +70,25 @@ class AmentiyDeail(APIView):
         amenity = self.get_object(pk)
         amenity.delete()
         return Response(status=HTTP_204_NO_CONTENT)
+
+
+class Rooms(APIView):
+    def get(self, request):
+        all_rooms = Room.objects.all()  ##Room 의 모든 오브젝틀르 뽑아옴
+        serializer = RoomListSerializer(
+            all_rooms, many=True
+        )  # serializer 를 사용하여 형식에 맞게 번역처리
+        return Response(serializer.data)  # serializer 에 담긴 data 를 전손
+
+
+class RoomDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return Room.objects.get(pk=pk)
+        except Room.DoesNotExist:
+            return NotFound
+
+    def get(self, request, pk):
+        room = self.get_object(pk)
+        serializer = RoomDetailSerializer(room)
+        return Response(serializer.data)

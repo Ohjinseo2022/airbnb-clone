@@ -177,3 +177,13 @@ class CategoryViewSet(ModelViewSet):
 #     elif request.method == "DELETE":
 #         category.delete()
 #         return Response(status=HTTP_204_NO_CONTENT)
+---------------------------------------------------------------------
+Rooms 에서 만들어야할 것들 
+GET POST / rooms
+GET PUT DELETE / roomx/1
+GET /rooms/1/amenities
+GET /rooms/1/reviews
+GET POST /amenities [X]
+GET POST DELETE /amenities/1 [x]
+GET POST /rooms/1/bookings
+GET PUT DELETE /rooms/1/bookings/2
