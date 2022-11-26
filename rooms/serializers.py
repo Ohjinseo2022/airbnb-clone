@@ -1,5 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 from .models import Amenity, Room
+from users.serializers import TinyUserSerilalizer
+from categories.serializers import CategorySerializer
 
 
 class RoomListSerializer(ModelSerializer):
@@ -18,11 +20,17 @@ class RoomListSerializer(ModelSerializer):
 class AmenitySerializer(ModelSerializer):
     class Meta:
         model = Amenity
-        fields = "__all__"
+        fields = (
+            "name",
+            "description",
+        )
 
 
 class RoomDetailSerializer(ModelSerializer):
+    owner = TinyUserSerilalizer()  # owner 에 해당하는 부분은 TinyUserSerializer 양식에 맞춰서 보여줘라!
+    amenity = AmenitySerializer(many=True)  # 안에 여러개의 정보가 포함되어 있기 떄문에 many=True 옵셥을 줘야함!
+    category = CategorySerializer()
+
     class Meta:
         model = Room
         fields = "__all__"
-        depth = 1

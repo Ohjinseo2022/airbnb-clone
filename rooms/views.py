@@ -86,7 +86,7 @@ class RoomDetail(APIView):
         try:
             return Room.objects.get(pk=pk)
         except Room.DoesNotExist:
-            return NotFound
+            raise NotFound
 
     def get(self, request, pk):
         room = self.get_object(pk)

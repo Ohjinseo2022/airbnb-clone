@@ -7,9 +7,9 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         # 보여줄 필드 설정
-        # fields = ("name", "kind")
+        fields = ("name", "kind")
         # exclude = () 안에 들어가는 필드를 제외하고 다보여줌
-        fields = "__all__"  # 모든 필드를 다보고싶을떄
+        # fields = "__all__"  # 모든 필드를 다보고싶을떄
 
     # serializers 사용방식
     # pk = serializers.IntegerField(read_only=True)
