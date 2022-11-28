@@ -1,6 +1,6 @@
 
 
-11.3챕터 시작 해야함 ! 아....아아아!!!!
+11.6챕터 보면됨 qhrtmqwnd
 
 serializers.py 예시
 from rest_framework import serializers
