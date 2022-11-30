@@ -1,6 +1,6 @@
 
 
-11.6챕터 보면됨 
+11.6챕터 공공데이터포탈 데이터 수집보면됨 
 
 serializers.py 예시
 from rest_framework import serializers
