@@ -189,17 +189,21 @@ GET POST /rooms/1/bookings
 GET PUT DELETE /rooms/1/bookings/2
 
 create_room test 용 
+
+{
 "name": "House created with DRF",
 "country": "한국",
 "city": "서울",
 "price": 1000,
 "rooms": 2,
 "toilets": 2,
-"category" : {
-    "name":"lalo","kind":"rooms"
-},
-"amenity":[{"name":"laalaala","description":"laalaala"}],
 "description": "DRF is great",
 "address": "123",
 "pet_friendly": true,
 "kind": "entire_place"
+}
+
+"category" : {
+    "name":"lalo","kind":"rooms"
+},
+"amenity":[{"name":"laalaala","description":"laalaala"}],
