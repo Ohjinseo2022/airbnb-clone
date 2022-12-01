@@ -30,9 +30,16 @@ class RoomDetailSerializer(ModelSerializer):
     owner = TinyUserSerilalizer(
         read_only=True
     )  # owner 에 해당하는 부분은 TinyUserSerializer 양식에 맞춰서 보여줘라!
-    amenity = AmenitySerializer(many=True)  # 안에 여러개의 정보가 포함되어 있기 떄문에 many=True 옵셥을 줘야함!
-    category = CategorySerializer()
+    amenity = AmenitySerializer(
+        read_only=True, many=True
+    )  # 안에 여러개의 정보가 포함되어 있기 떄문에 many=True 옵셥을 줘야함!
+    category = CategorySerializer(
+        read_only=True,
+    )
 
     class Meta:
         model = Room
         fields = "__all__"
+
+    # def create(self, validated_data):
+    #     return Room.objects.create(**validated_data)  # ** <= 모든데이터를 집어넣으라는뜻

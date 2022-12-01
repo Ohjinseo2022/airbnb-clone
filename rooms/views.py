@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.status import HTTP_204_NO_CONTENT
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, NotAuthenticated
 from .models import Amenity, Room
 from .serializers import AmenitySerializer, RoomListSerializer, RoomDetailSerializer
 
@@ -82,13 +82,18 @@ class Rooms(APIView):
 
     # create room!
     def post(self, request):
-        serializer = RoomDetailSerializer(data=request.data)
-        if serializer.is_valid():
-            room = serializer.save()  ## save() 메서드안에 .create()가 포함되어있음
-            serializer = RoomDetailSerializer(room)
-            return Response(serializer.data)
+        if request.user.is_authenticated:  ##로그인정보가있으면 owner 정보를 가지고있다면 ? 밑에 코드를 실행하라
+            serializer = RoomDetailSerializer(data=request.data)
+            if serializer.is_valid():
+                room = serializer.save(
+                    owner=request.user,
+                )  ## save() 메서드안에 .create()가 포함되어있음
+                serializer = RoomDetailSerializer(room)
+                return Response(serializer.data)
+            else:
+                return Response(serializer.errors)
         else:
-            return Response(serializer.errors)
+            raise NotAuthenticated
 
 
 class RoomDetail(APIView):
