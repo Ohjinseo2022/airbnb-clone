@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.status import HTTP_204_NO_CONTENT
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound, NotAuthenticated
+from rest_framework.exceptions import NotFound, NotAuthenticated, ParseError
 from .models import Amenity, Room
+from categories.models import Category
 from .serializers import AmenitySerializer, RoomListSerializer, RoomDetailSerializer
 
 
@@ -85,11 +86,26 @@ class Rooms(APIView):
         if request.user.is_authenticated:  ##로그인정보가있으면 owner 정보를 가지고있다면 ? 밑에 코드를 실행하라
             serializer = RoomDetailSerializer(data=request.data)
             if serializer.is_valid():
+                category_pk = request.data.get("category")
+                if not category_pk:  # 카테고리_pk 의 값이 없으면 오류출력
+                    raise ParseError  # 데이터를 잘못 전던했을떄 보여주는 에러
+                try:
+                    category = Category.objects.get(
+                        pk=category_pk
+                    )  # 있다면 카테고리 번호를 가지는 값을 변수에 담아주고
+                    if (
+                        category.kind == Category.CategoryKindChoices.EXPERIENCES
+                    ):  # 카테고리 정보가 EXPERIENCES에 포함된 카테고리라면 잘못된정보라고 에러띄울예정
+                        raise ParseError
+                except Category.DoesNotExist:
+                    raise ParseError
                 room = serializer.save(
                     owner=request.user,
+                    category=category,  # 카테고리의 정보를 명시해줌
                 )  ## save() 메서드안에 .create()가 포함되어있음
                 serializer = RoomDetailSerializer(room)
                 return Response(serializer.data)
+
             else:
                 return Response(serializer.errors)
         else:

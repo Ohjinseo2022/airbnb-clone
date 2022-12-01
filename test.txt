@@ -1,6 +1,6 @@
 
 
-11.6챕터 공공데이터포탈 데이터 수집보면됨 
+11.8챕터 보면됨 
 
 serializers.py 예시
 from rest_framework import serializers
@@ -200,6 +200,8 @@ create_room test 용
 "description": "DRF is great",
 "address": "123",
 "pet_friendly": true,
+"category" : 3,
+"amenity" : [1,2,3,4],
 "kind": "entire_place"
 }
 
