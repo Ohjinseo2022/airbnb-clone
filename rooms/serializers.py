@@ -41,6 +41,8 @@ class RoomDetailSerializer(ModelSerializer):
         model = Room
         fields = "__all__"
 
-    # def create(self, validated_data): ## 잘못된정보로 create가 작동하지 않게 동작을 막는 역할 모든 조건이 충족시 실험해보기
+    # def create(
+    #     self, validated_data
+    # ):  ## 잘못된정보로 create가 작동하지 않게 동작을 막는 역할 모든 조건이 충족시 실험해보기
     #     print(validated_data)
     #     return  # Room.objects.create(**validated_data)  # ** <= 모든데이터를 집어넣으라는뜻

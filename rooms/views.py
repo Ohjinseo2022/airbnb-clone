@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from django.db import transaction
 from rest_framework.status import HTTP_204_NO_CONTENT
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound, NotAuthenticated, ParseError
@@ -88,7 +89,7 @@ class Rooms(APIView):
             if serializer.is_valid():
                 category_pk = request.data.get("category")
                 if not category_pk:  # 카테고리_pk 의 값이 없으면 오류출력
-                    raise ParseError  # 데이터를 잘못 전던했을떄 보여주는 에러
+                    raise ParseError("Category is required")  # 데이터를 잘못 전던했을떄 보여주는 에러
                 try:
                     category = Category.objects.get(
                         pk=category_pk
@@ -96,16 +97,30 @@ class Rooms(APIView):
                     if (
                         category.kind == Category.CategoryKindChoices.EXPERIENCES
                     ):  # 카테고리 정보가 EXPERIENCES에 포함된 카테고리라면 잘못된정보라고 에러띄울예정
-                        raise ParseError
+                        raise ParseError("The category kind should be 'rooms")
                 except Category.DoesNotExist:
-                    raise ParseError
-                room = serializer.save(
-                    owner=request.user,
-                    category=category,  # 카테고리의 정보를 명시해줌
-                )  ## save() 메서드안에 .create()가 포함되어있음
-                serializer = RoomDetailSerializer(room)
-                return Response(serializer.data)
+                    raise ParseError("Category not found")
+                    # 모두가 작동하거나 모두가 작동자체를 않기를 원함 ! -> pk 가 과도하게 많이 소비되는것을 막는다 . 코드세트를 만들어서 그세트안에 하나라도 실패하면 모든것을 없던일로 만들 필요가있습니당 그걸 위해 Transection 을 사용할거임! 원래 기존 장고프레임워크는 코드가 실행되면 DB에 바로 적용된다는 단점이있음 그걸 없던일로 되돌리는 역할을함 !
 
+                    # transaction.atomic 을 사용하면 코드들이 정상적으로 작동하는지 확인후 작동하게됨
+                    # 변경사항들을 리스트로 저장하게되고 나중에 db 반영한다는거임
+
+                    # 기존에는 amenity생성시 오류 발생을하면 이미 생성된 방을 없애는 과정이 한번더 들어감
+                    # 하지만 이건 방자체를 생성하지 않기떄문에 과정하나가 사라짐
+                try:
+                    with transaction.atomic():
+                        room = serializer.save(
+                            owner=request.user,
+                            category=category,  # 카테고리의 정보를 명시해줌
+                        )  ## save() 메서드안에 .create()가 포함되어있음
+                        amenity_list = request.data.get("amenity")
+                        for amenity_pk in amenity_list:
+                            amenity = Amenity.objects.get(pk=amenity_pk)
+                            room.amenity.add(amenity)
+                        serializer = RoomDetailSerializer(room)
+                        return Response(serializer.data)
+                except Exception:
+                    raise ParseError("amenity not found")
             else:
                 return Response(serializer.errors)
         else:
