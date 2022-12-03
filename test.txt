@@ -1,6 +1,6 @@
 
 
-11.10챕터 보면됨 
+11.10챕터 일요일 보면됨 
 
 serializers.py 예시
 from rest_framework import serializers
