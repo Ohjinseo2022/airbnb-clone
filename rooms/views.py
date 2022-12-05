@@ -157,10 +157,27 @@ class RoomDetail(APIView):
             partial=True,  # partial => 부분적 업데이트 허용 !
         )
         if serializer.is_valid():  # serializer 에 값이 있으면
-            updated_perk = serializer.save()  # 업데이트 값 저장
-            return Response(
-                RoomDetailSerializer(updated_perk).data,
-            )  # 업데이트 값 전달
+            category_pk = request.data.get("category")
+            if category_pk:
+                try:
+                    category = Category.objects.get(
+                        pk=category_pk
+                    )  ## category 가 read_only 상태이기 떄문에 값을 받아올수있게 카테고리설정을 새로해줌
+                    if category.kind == Category.CategoryKindChoices.EXPERIENCES:
+                        raise ParseError("The category kind should be 'rooms")
+                except Category.DoesNotExist:
+                    raise ParseError("Category not found")
+            try:
+                update_room = serializer.save(category=category)  # 업데이트 값 저장
+                amenity_list = request.data.get("amenity")
+                for amenity_pk in amenity_list:
+                    amenity = Amenity.objects.get(pk=amenity_pk)
+                    update_room.amenity.add(amenity)
+                return Response(
+                    RoomDetailSerializer(update_room).data,
+                )  # 업데이트 값 전달
+            except Exception:
+                raise ParseError("amenity not found")
         else:
             return Response(serializer.errors)
 
