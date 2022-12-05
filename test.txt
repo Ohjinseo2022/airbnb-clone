@@ -1,7 +1,7 @@
 
 
-11.10챕터 일요일 보면됨 
-
+11.11챕터  보면됨 
+그전에 코드챌린지 진행해보기 ! 어려움.. .
 serializers.py 예시
 from rest_framework import serializers
 from .models import Category

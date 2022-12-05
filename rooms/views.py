@@ -2,7 +2,12 @@ from rest_framework.views import APIView
 from django.db import transaction
 from rest_framework.status import HTTP_204_NO_CONTENT
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound, NotAuthenticated, ParseError
+from rest_framework.exceptions import (
+    NotFound,
+    NotAuthenticated,
+    ParseError,
+    PermissionDenied,
+)
 from .models import Amenity, Room
 from categories.models import Category
 from .serializers import AmenitySerializer, RoomListSerializer, RoomDetailSerializer
@@ -138,3 +143,32 @@ class RoomDetail(APIView):
         room = self.get_object(pk)
         serializer = RoomDetailSerializer(room)
         return Response(serializer.data)
+
+    def put(self, request, pk):
+        room = self.get_object(pk)
+        if not request.user.is_authenticated:  # 로그인이 됐는지 확인
+            raise NotAuthenticated
+        if room.owner != request.user:  # 유저 정보가 일치하는지 확인
+            raise PermissionDenied  ## 권한 거부
+
+        serializer = RoomDetailSerializer(
+            room,
+            data=request.data,
+            partial=True,  # partial => 부분적 업데이트 허용 !
+        )
+        if serializer.is_valid():  # serializer 에 값이 있으면
+            updated_perk = serializer.save()  # 업데이트 값 저장
+            return Response(
+                RoomDetailSerializer(updated_perk).data,
+            )  # 업데이트 값 전달
+        else:
+            return Response(serializer.errors)
+
+    def delete(self, request, pk):
+        room = self.get_object(pk)
+        if not request.user.is_authenticated:  # 로그인이 됐는지 확인
+            raise NotAuthenticated
+        if room.owner != request.user:  # 유저 정보가 일치하는지 확인
+            raise PermissionDenied  ## 권한 거부
+        room.delete()
+        return Response(status=HTTP_204_NO_CONTENT)
