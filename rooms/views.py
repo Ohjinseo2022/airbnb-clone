@@ -83,7 +83,9 @@ class Rooms(APIView):
     def get(self, request):
         all_rooms = Room.objects.all()  ##Room 의 모든 오브젝틀르 뽑아옴
         serializer = RoomListSerializer(
-            all_rooms, many=True
+            all_rooms,
+            many=True,
+            context={"request": request},
         )  # serializer 를 사용하여 형식에 맞게 번역처리
         return Response(serializer.data)  # serializer 에 담긴 data 를 전손
 
@@ -141,7 +143,12 @@ class RoomDetail(APIView):
 
     def get(self, request, pk):
         room = self.get_object(pk)
-        serializer = RoomDetailSerializer(room)
+        serializer = RoomDetailSerializer(
+            room,
+            context={
+                "request": request,
+            },
+        )
         return Response(serializer.data)
 
     def put(self, request, pk):
