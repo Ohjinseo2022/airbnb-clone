@@ -58,10 +58,11 @@ class Room(CommonModel):
     def total_amenities(self):
         return self.amenity.count()
 
+    # 평균 별점을 나타내는 함수 모델 선언 이걸 serializer에서 사용할에정
     def rating(room):
         count = room.reviews.count()
         if count == 0:
-            return "해당 없음"
+            return 0
         else:
             total_rating = 0
             for review in room.reviews.all().values("rating"):
