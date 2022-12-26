@@ -1,6 +1,6 @@
 
 
-11.11챕터  보면됨 
+11.13챕터  보면됨 
 그전에 코드챌린지 진행해보기 ! 어려움.. .
 serializers.py 예시
 from rest_framework import serializers
